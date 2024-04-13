@@ -30,7 +30,7 @@ public class ReportCommand implements SimpleCommand {
     @Override
     public void execute(Invocation invocation) {
         CommandSource sender = invocation.source();
-        String[] args = invocation.arguments(); // Utilizzare String[] invece di List<String>
+        String[] args = invocation.arguments();
         YamlDocument config = configManager.getConfig("config").get();
 
         if (!(sender instanceof Player)) {
@@ -45,22 +45,19 @@ public class ReportCommand implements SimpleCommand {
             return;
         }
 
-        String reportedPlayerName = args[0]; // Utilizzare args[0] invece di args.get(0)
-        String reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length)); // Modifica della concatenazione della motivazione
+        String reportedPlayerName = args[0];
+        String reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        // Check if the reported player is online
         Player reportedPlayer = proxy.getPlayer(reportedPlayerName).orElse(null);
         if (reportedPlayer == null) {
             player.sendMessage(ChatUtils.color(String.format(config.getString("messages.player_not_online"), reportedPlayerName)));
             return;
         }
-
-        // Send report message to authorized players
         Component reportMessage = ChatUtils.color(config.getString("messages.alert")
                 .replace("%player%", player.getUsername())
                 .replace("%reported%", reportedPlayer.getUsername())
                 .replace("%reason%", reason)
-        );//quando lo metti ti faccio una pull request xd grande fra!
+        );
         proxy.getAllPlayers().stream()
                 .filter(p -> p.hasPermission("incrediblereports.receivereports"))
                 .forEach(p -> p.sendMessage(reportMessage));
@@ -72,7 +69,7 @@ public class ReportCommand implements SimpleCommand {
     public List<String> suggest(Invocation invocation) {
         List<String> list = new ArrayList<>();
         for(Player player : proxy.getAllPlayers()){
-            list.add(player.getUsername());//ffatto ma quanto sei ptoetnte, testiamo sul proxy della vps
+            list.add(player.getUsername());
         }
         return list;
     }
