@@ -1,0 +1,11 @@
+# IncredibleReports v1.0 By Skrahs
+
+messages:
+  player_only_command: "&cSolo i giocatori possono utilizzare questo comando."
+  correct_usage: "&cUtilizzo corretto: /report <giocatore> <motivazione>"
+  player_not_online: "&cIl giocatore %s non è online."
+  report_sent_successfully: "&aReport inviato con successo."
+  alert: "&7[REPORT] &e%player% ha segnalato %reported% per: %reason%"
+
+
+configuration-version: 1
