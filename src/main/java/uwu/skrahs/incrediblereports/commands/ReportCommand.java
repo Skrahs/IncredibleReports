@@ -51,6 +51,12 @@ public class ReportCommand implements SimpleCommand {
             player.sendMessage(ChatUtils.color(String.format(config.getString("messages.player_not_online"), reportedPlayerName)));
             return;
         }
+
+        if(reportedPlayer == player){
+            player.sendMessage(ChatUtils.color(config.getString("messages.self_report")));
+            return;
+        }
+
         Component reportMessage = ChatUtils.color(config.getString("messages.alert")
                 .replace("%player%", player.getUsername())
                 .replace("%reported%", reportedPlayer.getUsername())
