@@ -33,12 +33,10 @@ public class ReportCommand implements SimpleCommand {
         String[] args = invocation.arguments();
         YamlDocument config = configManager.getConfig("config").get();
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatUtils.color(config.getString("messages.player_only_command")));
             return;
         }
-
-        Player player = (Player) sender;
 
         if (args.length < 2) {
             player.sendMessage(ChatUtils.color(config.getString("messages.correct_usage")));
