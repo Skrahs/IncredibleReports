@@ -1,5 +1,7 @@
 package uwu.skrahs.incrediblereports.commands;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.command.CommandSource;
@@ -15,16 +17,20 @@ import com.velocitypowered.api.permission.PermissionSubject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ReportCommand implements SimpleCommand {
 
     private final ProxyServer proxy;
     private final ConfigManager configManager;
+    private final Cache<UUID, Long> cooldown;
 
     @Inject
     public ReportCommand(ProxyServer proxy, ConfigManager configManager) {
         this.proxy = proxy;
         this.configManager = configManager;
+        this.cooldown = CacheBuilder.newBuilder().expireAfterWrite(configManager.getConfig("config").get().getInt("cooldown"), TimeUnit.SECONDS).build();
     }
 
     @Override
@@ -35,6 +41,11 @@ public class ReportCommand implements SimpleCommand {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatUtils.color(config.getString("messages.player_only_command")));
+            return;
+        }
+
+        if(cooldown.asMap().containsKey(player.getUniqueId())){
+            player.sendMessage(ChatUtils.color(config.getString("messages.cooldown")));
             return;
         }
 
@@ -65,6 +76,8 @@ public class ReportCommand implements SimpleCommand {
         proxy.getAllPlayers().stream()
                 .filter(p -> p.hasPermission("incrediblereports.receivereports"))
                 .forEach(p -> p.sendMessage(reportMessage));
+
+        cooldown.put(player.getUniqueId(), config.getInt("cooldown")*1000L);
 
         player.sendMessage(ChatUtils.color(config.getString("messages.report_sent_successfully")));
     }
